@@ -23,6 +23,9 @@ now has three new arguments to build the intervals on the fly
 --min get all chars starting from to this characters unicode
 it also sets the defaults to the max in all included characters
 
+sometimes a font will fail on all try setting the min and max to a smaller range 
+some files dont report valid characters
+
 
 
 """
@@ -59,9 +62,10 @@ if args.all_chars or args.max :
   minimum = args.min
   next_char = face.get_first_char()
   #I know there is a better way but this is clear and simple
-  if minimum != None:
-    while  next_char[0] < minimum:
-      next_char = face.get_next_char(next_char[0], next_char[1])
+  if minimum == None:
+    minimum = 32;
+  while  next_char[0] < minimum:
+    next_char = face.get_next_char(next_char[0], next_char[1])
 
   low_int = next_char[0]
   while  next_char[0] != 0:
@@ -69,14 +73,13 @@ if args.all_chars or args.max :
     next_char = face.get_next_char(old_char[0], old_char[1])
     if old_char[0] + 1 != next_char[0] or next_char[0] > maximum:
       interval = [low_int, old_char[0]]
-      # ~ intervals.append((low_int, old_char[0])
-      # ~ print (interval)
       intervals.append(interval)
-      # ~ print( f"    ({low_int}, {old_char[0]}),")
       low_int = next_char[0]
     if next_char[0] > maximum:
       break
 else:
+  #  Below is where you deffine specific intervals if not using min max or all
+
   intervals = [
       (32,34),
   ]
